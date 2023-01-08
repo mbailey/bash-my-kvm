@@ -19,7 +19,7 @@ GUEST_NAME="${1:-}"
 GUEST_TYPE=${2:-amzn2}
 
 OS_VARIANT="rhel7.0" # update below for images
-DISK_SIZE=${DISK_SIZE:-32}
+DISK_SIZE=${DISK_SIZE:-32G}
 
 case $GUEST_TYPE in
   al2 | amzn2 | a)
@@ -116,24 +116,25 @@ qemu-img create           \
     -f qcow2              \
     -b "$IMAGE_FILENAME"  \
     -F qcow2              \
-    "${GUEST_NAME}.qcow2"
+    "${GUEST_NAME}.qcow2" \
+    "$DISK_SIZE"
 
 # Print defaults about newly created image
 qemu-img info --backing-chain "${GUEST_NAME}.qcow2"
 cd -
 
-# Create a KVM guest based on the image and cloud-init config 
-virt-install                                                                   \
-  --console pty,target_type=serial                                             \
-  --description "${IMAGE_DISPLAY_NAME} Copy on Write (COW)"                    \
-  --disk path="/var/lib/libvirt/images/${GUEST_NAME}.qcow2",bus=virtio,size=${DISK_SIZE}\
-  --disk path="${SEED_ISO_FILENAME}",device=cdrom                              \
-  --import                                                                     \
-  --name "${GUEST_NAME}"                                                       \
-  --network bridge:virbr0,model=virtio                                         \
-  --os-variant=${OS_VARIANT}                                                   \
-  --ram=2048                                                                   \
-  --vcpus=2                                                                    \
+# Create a KVM guest based on the image and cloud-init config
+virt-install                                                           \
+  --console pty,target_type=serial                                     \
+  --description "${IMAGE_DISPLAY_NAME} Copy on Write (COW)"            \
+  --disk path="/var/lib/libvirt/images/${GUEST_NAME}.qcow2",bus=virtio \
+  --disk path="${SEED_ISO_FILENAME}",device=cdrom                      \
+  --import                                                             \
+  --name "${GUEST_NAME}"                                               \
+  --network bridge:virbr0,model=virtio                                 \
+  --os-variant=${OS_VARIANT}                                           \
+  --ram=2048                                                           \
+  --vcpus=2                                                            \
   --noautoconsole
 
 ## Connect
