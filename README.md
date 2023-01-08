@@ -11,6 +11,9 @@ Currently only one command: `kvm-guest-create`
       - runs system update
       - installs tailscale
 
+## TODO
+
+- Remove need to run as root (/var/lib/libvirt/images permissions)
 ## Usage
 
 ```shell
