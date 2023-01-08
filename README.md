@@ -1,17 +1,22 @@
-# kvm-guest-create
+# bash-my-kvm
 
 Create various flavours of linux VMs in no time.
+
+Currently only one command: `kvm-guest-create`
 
 - Takes ~35 seconds from running script till SSH being available
 - Amazon Linux 2, Fedora, Rocky Linux
 - Guests findable by name from host and each other with zero config
+- On first boot:
+      - runs system update
+      - installs tailscale
 
 ## Usage
 
 ```shell
 GUEST_NAME=grafana
 
-bin/kvm-guest-create "${GUEST_NAME}-amazon" amazon
+sudo bin/kvm-guest-create "${GUEST_NAME}-amazon" amazon
 ```
 
 ## Install Deps (fedora-36)
