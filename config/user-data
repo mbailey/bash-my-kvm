@@ -29,7 +29,7 @@ write_files:
 package_upgrade: true
 
 packages:
- - wget
+  - wget
 
 # Note: Don't write files to /tmp from cloud-init use /run/somedir instead.
 # Early boot environments can race systemd-tmpfiles-clean LP: #1707222.
@@ -37,4 +37,4 @@ runcmd:
   - mkdir /run/tailscale
   - wget https://tailscale.com/install.sh -O /run/tailscale/install.sh
   - sh /run/tailscale/install.sh
-  - tailscale, up
+  - tailscale up
