@@ -20,14 +20,16 @@ GUEST_TYPE=${2:-amzn2}
 
 OS_VARIANT="rhel7.0" # update below for images
 DISK_SIZE=${DISK_SIZE:-32G}
+RAM=4096
 
 case $GUEST_TYPE in
   al2 | amzn2 | a)
-    IMAGE_URL='https://cdn.amazonlinux.com/os-images/2.0.20221004.0/kvm/amzn2-kvm-2.0.20221004.0-x86_64.xfs.gpt.qcow2'
+    # TODO: Find latest from https://cdn.amazonlinux.com/os-images/latest/
+    IMAGE_URL='https://cdn.amazonlinux.com/os-images/2.0.20221210.0/kvm/amzn2-kvm-2.0.20221210.0-x86_64.xfs.gpt.qcow2'
     IMAGE_DISPLAY_NAME="Amazon Linux 2"
     ;;
   fedora-37 | fedora37 | f37 | fedora | f)
-    IMAGE_URL='https://fedora.mirror.digitalpacific.com.au/linux/releases/37/Cloud/x86_64/images/Fedora-Cloud-Base-37-1.7.x86_64.qcow2'
+    IMAGE_URL='https://download.fedoraproject.org/pub/fedora/linux/releases/37/Cloud/x86_64/images/Fedora-Cloud-Base-37-1.7.x86_64.qcow2'
     IMAGE_DISPLAY_NAME="Fedora Cloud 37"
     ;;
   fedora-36 | fedora36 | f36)
@@ -133,7 +135,7 @@ virt-install                                                           \
   --name "${GUEST_NAME}"                                               \
   --network bridge:virbr0,model=virtio                                 \
   --os-variant=${OS_VARIANT}                                           \
-  --ram=2048                                                           \
+  --ram="$RAM"                                                           \
   --vcpus=2                                                            \
   --noautoconsole
 
