@@ -83,8 +83,8 @@ function check_deps() {
 check_deps
 
 # Set to default if unset
-: ${LIBVIRT_IMAGES_DIR:=/var/lib/libvirt/images}
-IMAGE_FILENAME="$(basename "$IMAGE_URL")"
+mkdir -p "${LIBVIRT_IMAGES_DIR:=${HOME}/.libvirt/images}"
+IMAGE_FILENAME=$(basename "$IMAGE_URL")
 
 # Update hostname in `meta-data` file
 sed "s/CHANGEME/$GUEST_NAME/" config/meta-data-template > config/meta-data
@@ -103,7 +103,7 @@ genisoimage                      \
 # Get KVM disk image
 cd "$LIBVIRT_IMAGES_DIR"
 wget --no-clobber "$IMAGE_URL"
-chmod a-w "$(basename "$IMAGE_URL")"
+chmod a-w "$(basename "$IMAGE_URL")" || true # Don't error if qemu is owner of cached copy
 cd -
 
 # TODO Verify downloaded image using signed checksums

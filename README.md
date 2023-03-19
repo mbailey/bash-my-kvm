@@ -13,11 +13,15 @@ Currently only one command: `kvm-guest-create`
 
 ## TODO
 
-- Remove need to run as root (/var/lib/libvirt/images permissions)
+- bash completion on distros available
+- fix ssh between guests (Add Tailscale domain to /etc/resolv.conf)
+
 ## Usage
 
 ```shell
 GUEST_NAME=grafana
+
+export LIBVIRT_IMAGES_DIR=~/.libvirt/images # optional for non-root usage
 
 sudo bin/kvm-guest-create "${GUEST_NAME}-amazon" amazon
 ```
@@ -84,7 +88,3 @@ SSH to it's IP address (accessible by name from host or other guests):
 ssh admin@$GUEST_NAME
 ```
 
-## TODO
-
-- bash completion on distros available
-- fix ssh between guests
