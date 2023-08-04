@@ -13,6 +13,7 @@ Currently only one command: `kvm-guest-create`
 
 ## TODO
 
+- Remove need to run as root (/var/lib/libvirt/images permissions)
 - bash completion on distros available
 - fix ssh between guests (Add Tailscale domain to /etc/resolv.conf)
 
@@ -57,7 +58,7 @@ Optionally update the default username / password / SSH public key.
 Make guests addressable from host by name:
 
 ```shell
-sudo yum install libvirt-nss ## RHEL/CentOS/Fedora ##
+sudo yum install -y libvirt-nss ## RHEL/CentOS/Fedora ##
 sudo apt install libnss-libvirt ## Debian/Ubuntu ##
 ```
 

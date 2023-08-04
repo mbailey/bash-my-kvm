@@ -25,10 +25,14 @@ RAM=4096
 case $GUEST_TYPE in
   al2 | amzn2 | a)
     # TODO: Find latest from https://cdn.amazonlinux.com/os-images/latest/
-    IMAGE_URL='https://cdn.amazonlinux.com/os-images/2.0.20230307.0/kvm/amzn2-kvm-2.0.20230307.0-x86_64.xfs.gpt.qcow2'
+    IMAGE_URL='https://cdn.amazonlinux.com/os-images/2.0.20230727.0/kvm/amzn2-kvm-2.0.20230727.0-x86_64.xfs.gpt.qcow2'
     IMAGE_DISPLAY_NAME="Amazon Linux 2"
     ;;
-  fedora-37 | fedora37 | f37 | fedora | f)
+  fedora-38 | fedora38 | f38 | fedora | f)
+    IMAGE_URL='https://download.fedoraproject.org/pub/fedora/linux/releases/38/Cloud/x86_64/images/Fedora-Cloud-Base-38-1.6.x86_64.qcow2'
+    IMAGE_DISPLAY_NAME="Fedora Cloud 37"
+    ;;
+  fedora-37 | fedora37 | f37)
     IMAGE_URL='https://download.fedoraproject.org/pub/fedora/linux/releases/37/Cloud/x86_64/images/Fedora-Cloud-Base-37-1.7.x86_64.qcow2'
     IMAGE_DISPLAY_NAME="Fedora Cloud 37"
     ;;
@@ -83,8 +87,8 @@ function check_deps() {
 check_deps
 
 # Set to default if unset
-mkdir -p "${LIBVIRT_IMAGES_DIR:=${HOME}/.libvirt/images}"
-IMAGE_FILENAME=$(basename "$IMAGE_URL")
+: ${LIBVIRT_IMAGES_DIR:=/var/lib/libvirt/images}
+IMAGE_FILENAME="$(basename "$IMAGE_URL")"
 
 # Update hostname in `meta-data` file
 sed "s/CHANGEME/$GUEST_NAME/" config/meta-data-template > config/meta-data
@@ -103,7 +107,7 @@ genisoimage                      \
 # Get KVM disk image
 cd "$LIBVIRT_IMAGES_DIR"
 wget --no-clobber "$IMAGE_URL"
-chmod a-w "$(basename "$IMAGE_URL")" || true # Don't error if qemu is owner of cached copy
+chmod a-w "$(basename "$IMAGE_URL")"
 cd -
 
 # TODO Verify downloaded image using signed checksums
@@ -129,7 +133,7 @@ cd -
 virt-install                                                           \
   --console pty,target_type=serial                                     \
   --description "${IMAGE_DISPLAY_NAME} Copy on Write (COW)"            \
-  --disk path="${LIBVIRT_IMAGES_DIR}/${GUEST_NAME}.qcow2",bus=virtio \
+  --disk path="/var/lib/libvirt/images/${GUEST_NAME}.qcow2",bus=virtio \
   --disk path="${SEED_ISO_FILENAME}",device=cdrom                      \
   --import                                                             \
   --name "${GUEST_NAME}"                                               \
