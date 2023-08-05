@@ -87,7 +87,7 @@ function check_deps() {
 check_deps
 
 # Set to default if unset
-: ${LIBVIRT_IMAGES_DIR:=/var/lib/libvirt/images}
+: ${LIBVIRT_IMAGES_DIR:=${HOME}/.local/share/libvirt/images/}
 IMAGE_FILENAME="$(basename "$IMAGE_URL")"
 
 # Update hostname in `meta-data` file
@@ -133,7 +133,7 @@ cd -
 virt-install                                                           \
   --console pty,target_type=serial                                     \
   --description "${IMAGE_DISPLAY_NAME} Copy on Write (COW)"            \
-  --disk path="/var/lib/libvirt/images/${GUEST_NAME}.qcow2",bus=virtio \
+  --disk path="${LIBVIRT_IMAGES_DIR}/${GUEST_NAME}.qcow2",bus=virtio \
   --disk path="${SEED_ISO_FILENAME}",device=cdrom                      \
   --import                                                             \
   --name "${GUEST_NAME}"                                               \
