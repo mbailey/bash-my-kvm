@@ -9,6 +9,9 @@ set -eu -o pipefail
 # - [Run Amazon Linux 2 as a virtual machine on premises (docs.aws.amazon.com)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/amazon-linux-2-virtual-machine.html#amazon-linux-2-virtual-machine-download)
 # - [QEMU  KVM Using the Copy-On-Write mode (www.unixmen.com)](https://www.unixmen.com/qemu-kvm-using-copy-write-mode/)
 
+: ${LIBVIRT_IMAGES_DIR:=${HOME}/.local/share/libvirt/images/}
+[[ -d $LIBVIRT_IMAGES_DIR ]] || mkdir -p "$LIBVIRT_IMAGES_DIR"
+
 function usage() {
   echo >&2 "Usage: $0 GUEST_NAME [GUEST_TYPE] # amzn2, fedora, rocky, ha, etc"
 }
@@ -87,7 +90,6 @@ function check_deps() {
 check_deps
 
 # Set to default if unset
-: ${LIBVIRT_IMAGES_DIR:=${HOME}/.local/share/libvirt/images/}
 IMAGE_FILENAME="$(basename "$IMAGE_URL")"
 
 # Update hostname in `meta-data` file
