@@ -13,7 +13,6 @@ Currently only one command: `kvm-guest-create`
 
 ## TODO
 
-- Remove need to run as root (/var/lib/libvirt/images permissions)
 - bash completion on distros available
 - fix ssh between guests (Add Tailscale domain to /etc/resolv.conf)
 
@@ -46,6 +45,8 @@ sudo systemctl enable --now libvirtd.service # required?
 ```
 
 ## Configure
+
+
 
 ### Configure SSH key / password in `config/user-data`.
 
