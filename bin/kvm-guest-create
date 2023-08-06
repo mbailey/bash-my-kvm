@@ -9,7 +9,11 @@ set -eu -o pipefail
 # - [Run Amazon Linux 2 as a virtual machine on premises (docs.aws.amazon.com)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/amazon-linux-2-virtual-machine.html#amazon-linux-2-virtual-machine-download)
 # - [QEMU  KVM Using the Copy-On-Write mode (www.unixmen.com)](https://www.unixmen.com/qemu-kvm-using-copy-write-mode/)
 
-: ${LIBVIRT_IMAGES_DIR:=${HOME}/.local/share/libvirt/images/}
+export SLF_DIR="$(readlink -f "$(dirname -- "${BASH_SOURCE[0]:-${0:A}}")/../")"
+cd "$SLF_DIR"
+
+# : ${LIBVIRT_IMAGES_DIR:=${HOME}/.local/share/libvirt/images/}
+: ${LIBVIRT_IMAGES_DIR:=/var/lib/libvirt/images}
 [[ -d $LIBVIRT_IMAGES_DIR ]] || mkdir -p "$LIBVIRT_IMAGES_DIR"
 
 function usage() {
@@ -54,7 +58,7 @@ case $GUEST_TYPE in
   # ha)
   #   IMAGE_URL='https://github.com/home-assistant/operating-system/releases/download/9.4/haos_ova-9.4.qcow2.xz'
   #   ;;
-  # XXX It's not liking our config/meta-data 
+  # XXX It's not liking our config/meta-data
   # ubuntu-22.04 | ubuntu)
   #   IMAGE_URL='https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-disk-kvm.img'
   # ubuntu-20.04 | ubuntu)
