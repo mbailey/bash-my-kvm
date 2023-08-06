@@ -13,7 +13,7 @@ Currently only one command: `kvm-guest-create`
 
 ## TODO
 
-- bash completion on distros available
+- bash completion on available distros
 - fix ssh between guests (Add Tailscale domain to /etc/resolv.conf)
 
 ## Usage
@@ -46,7 +46,9 @@ sudo systemctl enable --now libvirtd.service # required?
 
 ## Configure
 
-
+- [Configure Rootless access](https://github.com/mbailey/notes/tree/master/docs/libvirt)
+  - Use libvirt as non root user
+  - Change default location for libvirt-images
 
 ### Configure SSH key / password in `config/user-data`.
 
