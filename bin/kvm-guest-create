@@ -37,7 +37,7 @@ case $GUEST_TYPE in
     ;;
   fedora-38 | fedora38 | f38 | fedora | f)
     IMAGE_URL='https://download.fedoraproject.org/pub/fedora/linux/releases/38/Cloud/x86_64/images/Fedora-Cloud-Base-38-1.6.x86_64.qcow2'
-    IMAGE_DISPLAY_NAME="Fedora Cloud 37"
+    IMAGE_DISPLAY_NAME="Fedora Cloud 38"
     ;;
   fedora-37 | fedora37 | f37)
     IMAGE_URL='https://download.fedoraproject.org/pub/fedora/linux/releases/37/Cloud/x86_64/images/Fedora-Cloud-Base-37-1.7.x86_64.qcow2'
