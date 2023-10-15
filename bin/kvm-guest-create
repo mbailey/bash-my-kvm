@@ -35,6 +35,11 @@ case $GUEST_TYPE in
     IMAGE_URL='https://cdn.amazonlinux.com/os-images/2.0.20230727.0/kvm/amzn2-kvm-2.0.20230727.0-x86_64.xfs.gpt.qcow2'
     IMAGE_DISPLAY_NAME="Amazon Linux 2"
     ;;
+  debian-12 | debian | d )
+    # TODO: Find latest from https://cdn.amazonlinux.com/os-images/latest/
+    IMAGE_URL='https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2'
+    IMAGE_DISPLAY_NAME="Debian 12"
+    ;;
   fedora-38 | fedora38 | f38 | fedora | f)
     IMAGE_URL='https://download.fedoraproject.org/pub/fedora/linux/releases/38/Cloud/x86_64/images/Fedora-Cloud-Base-38-1.6.x86_64.qcow2'
     IMAGE_DISPLAY_NAME="Fedora Cloud 38"
