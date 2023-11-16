@@ -40,6 +40,10 @@ case $GUEST_TYPE in
     IMAGE_URL='https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2'
     IMAGE_DISPLAY_NAME="Debian 12"
     ;;
+  fedora-39 | fedora39 | f39 | fedora | f)
+    IMAGE_URL='https://download.fedoraproject.org/pub/fedora/linux/releases/39/Cloud/x86_64/images/Fedora-Cloud-Base-39-1.5.x86_64.qcow2'
+    IMAGE_DISPLAY_NAME="Fedora Cloud 39"
+    ;;
   fedora-38 | fedora38 | f38 | fedora | f)
     IMAGE_URL='https://download.fedoraproject.org/pub/fedora/linux/releases/38/Cloud/x86_64/images/Fedora-Cloud-Base-38-1.6.x86_64.qcow2'
     IMAGE_DISPLAY_NAME="Fedora Cloud 38"
