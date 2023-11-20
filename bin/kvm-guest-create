@@ -127,7 +127,7 @@ function download_and_verify_image() {
 
   # Download and verify checksums if URL is provided
   if [[ -n "${SHASUMS_URL:-}" ]]; then
-    wget --no-clobber "$SHASUMS_URL"
+    wget "$SHASUMS_URL"
 
     # Extract filename from SHASUMS_URL
     local shasums_filename=$(basename "$SHASUMS_URL")
