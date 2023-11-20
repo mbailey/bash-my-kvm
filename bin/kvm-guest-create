@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -eu -o pipefail
-
 # Install Linux on kvm via CLI
 #
 # - Create a small Copy on Write (COW) file backed by the linux qcow2 image.
@@ -32,29 +31,30 @@ RAM=4096
 case $GUEST_TYPE in
   al2 | amzn2 | a)
     # TODO: Find latest from https://cdn.amazonlinux.com/os-images/latest/
-    IMAGE_URL='https://cdn.amazonlinux.com/os-images/2.0.20230727.0/kvm/amzn2-kvm-2.0.20230727.0-x86_64.xfs.gpt.qcow2'
+    IMAGE_URL='https://cdn.amazonlinux.com/os-images/2.0.20231101.0/kvm/amzn2-kvm-2.0.20231101.0-x86_64.xfs.gpt.qcow2'
     IMAGE_DISPLAY_NAME="Amazon Linux 2"
+    SHASUMS_URL="https://cdn.amazonlinux.com/os-images/2.0.20231101.0/kvm/SHA256SUMS"
+    ;;
+  al2023)
+    # TODO: Find latest from https://cdn.amazonlinux.com/os-images/latest/
+    IMAGE_URL='https://cdn.amazonlinux.com/al2023/os-images/2023.2.20231113.0/kvm/al2023-kvm-2023.2.20231113.0-kernel-6.1-x86_64.xfs.gpt.qcow2'
+    IMAGE_DISPLAY_NAME="Amazon Linux 2023"
+    SHASUMS_URL="https://cdn.amazonlinux.com/al2023/os-images/2023.2.20231113.0/kvm/SHA256SUMS"
     ;;
   debian-12 | debian | d )
     # TODO: Find latest from https://cdn.amazonlinux.com/os-images/latest/
     IMAGE_URL='https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2'
     IMAGE_DISPLAY_NAME="Debian 12"
+    SHASUMS_URL="https://cloud.debian.org/images/cloud/bookworm/latest/SHA512SUMS"
     ;;
   fedora-39 | fedora39 | f39 | fedora | f)
     IMAGE_URL='https://download.fedoraproject.org/pub/fedora/linux/releases/39/Cloud/x86_64/images/Fedora-Cloud-Base-39-1.5.x86_64.qcow2'
     IMAGE_DISPLAY_NAME="Fedora Cloud 39"
+    # SHASUMS_URL="https://download.fedoraproject.org/pub/fedora/linux/releases/39/Cloud/x86_64/images/Fedora-Cloud-39-1.5-x86_64-CHECKSUM"
     ;;
   fedora-38 | fedora38 | f38 | fedora | f)
     IMAGE_URL='https://download.fedoraproject.org/pub/fedora/linux/releases/38/Cloud/x86_64/images/Fedora-Cloud-Base-38-1.6.x86_64.qcow2'
     IMAGE_DISPLAY_NAME="Fedora Cloud 38"
-    ;;
-  fedora-37 | fedora37 | f37)
-    IMAGE_URL='https://download.fedoraproject.org/pub/fedora/linux/releases/37/Cloud/x86_64/images/Fedora-Cloud-Base-37-1.7.x86_64.qcow2'
-    IMAGE_DISPLAY_NAME="Fedora Cloud 37"
-    ;;
-  fedora-36 | fedora36 | f36)
-    IMAGE_URL='https://download.fedoraproject.org/pub/fedora/linux/releases/36/Cloud/x86_64/images/Fedora-Cloud-Base-36-1.5.x86_64.qcow2'
-    IMAGE_DISPLAY_NAME="Fedora Cloud 36"
     ;;
   rocky-9 | rocky9 | r9 | r | rocky)
     IMAGE_URL='https://download.rockylinux.org/pub/rocky/9.0/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2'
@@ -119,13 +119,34 @@ genisoimage                      \
   config/user-data               \
   config/meta-data
 
-# Get KVM disk image
-cd "$LIBVIRT_IMAGES_DIR"
-wget --no-clobber "$IMAGE_URL"
-chmod a-w "$(basename "$IMAGE_URL")"
-cd -
 
-# TODO Verify downloaded image using signed checksums
+function download_and_verify_image() {
+  # Download the image
+  wget --no-clobber "$IMAGE_URL"
+  chmod a-w "$(basename "$IMAGE_URL")"
+
+  # Download and verify checksums if URL is provided
+  if [[ -n "${SHASUMS_URL:-}" ]]; then
+    wget --no-clobber "$SHASUMS_URL"
+
+    # Extract filename from SHASUMS_URL
+    local shasums_filename=$(basename "$SHASUMS_URL")
+
+    # Determine if the checksums are SHA256 or SHA512 based on the filename
+    if [[ "$shasums_filename" == *256* ]]; then
+      sha256sum --check --ignore-missing "$shasums_filename"
+    elif [[ "$shasums_filename" == *512* ]]; then
+      sha512sum --check --ignore-missing "$shasums_filename"
+    else
+      echo "Unknown checksum type."
+      return 1
+    fi
+  fi
+}
+
+cd "$LIBVIRT_IMAGES_DIR"
+download_and_verify_image # ADDED: Function call to download and verify
+cd -
 
 # Delete existing kvm guest with same name
 virsh destroy "${GUEST_NAME}" || :
